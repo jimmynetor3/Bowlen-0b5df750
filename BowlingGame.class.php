@@ -48,14 +48,67 @@ class BowlingGame
 
     private function playAllRounds()
     {
+        for ($i = 0; $i < $this->rounds; $i++) {
+            $displayRound = $i + 1;
+            echo '---------------------------------------' . PHP_EOL;
+            echo 'Ronde ' . $displayRound . PHP_EOL;
+            echo '---------------------------------------' . PHP_EOL;
+            $this->playRound();
+        }
+        echo '---------------------------------------' . PHP_EOL;
+        echo 'Einde' . PHP_EOL;
+        echo '---------------------------------------' . PHP_EOL;
+        $this->scoreBoard->displayEndScores();
     }
 
     private function playRound()
     {
+        foreach ($this->players as $player) {
+            $score = [
+                0 => 0,
+                1 => 0
+            ];
+            $pinsTrowedFirstRound = $this->throwBall($player);
+            $score[0] = $pinsTrowedFirstRound;
+            if ($pinsTrowedFirstRound != $this->maxPins) {
+                $pinsToTrow = $this->maxPins - $pinsTrowedFirstRound;
+                echo "{$player} zit te denken hoeveel hij nog moet gooien om te winnen ..." . PHP_EOL;
+                sleep(5);
+                echo "{$player} heeft bedacht dat hij nog {$pinsToTrow} kegels om moet gooien om te winnen" . PHP_EOL;
+                echo PHP_EOL;
+                $pinsTrowedSecondRound = $this->throwBall($player, $pinsToTrow);
+                $score[1] = $pinsTrowedSecondRound;
+                if ($score[0] + $score[1] === $this->maxPins) {
+                    echo "{$player} is redelijk blij dat hij een spar heeft gegooid";
+                } else {
+                    echo "{$player} is verdrietig dat hij geen spar of strike heeft gegooid";
+                }
+            } else {
+                echo "{$player} is blij hij heeft een strike gegooid!";
+            }
+            $this->scoreBoard->calculatePlayerScore($player, $score);
+            echo PHP_EOL;
+        }
     }
 
     private function throwBall($player, $maxPins = null)
     {
-
+        if ($maxPins === null) {
+            $maxPins = $this->maxPins;
+        }
+        echo "{$player} loopt naar de ballen bak..." . PHP_EOL;
+        sleep(5);
+        echo "{$player} pakt de bal..." . PHP_EOL;
+        sleep(2);
+        echo "{$player} loopt met de bal naar de baan..." . PHP_EOL;
+        sleep(5);
+        echo "{$player} gooit de bal..." . PHP_EOL;
+        sleep(10);
+        $pinsTrowed = rand(0, $maxPins);
+        echo "{$player} kijkt naar het scoreBoard..." . PHP_EOL;
+        sleep(2);
+        echo "{$player} heeft {$pinsTrowed} gegooid..." . PHP_EOL;
+        sleep(1);
+        return $pinsTrowed;
     }
 }
